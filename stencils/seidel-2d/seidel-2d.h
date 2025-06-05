@@ -1,12 +1,3 @@
-/**
- * This version is stamped on May 10, 2016
- *
- * Contact:
- *   Louis-Noel Pouchet <pouchet.ohio-state.edu>
- *   Tomofumi Yuki <tomofumi.yuki.fr>
- *
- * Web address: http://polybench.sourceforge.net
- */
 #ifndef _SEIDEL_2D_H
 # define _SEIDEL_2D_H
 
@@ -20,27 +11,27 @@
 #  ifdef MINI_DATASET
 #   define TSTEPS 20
 #   define N 40
-#  endif
+#  endif 
 
 #  ifdef SMALL_DATASET
 #   define TSTEPS 40
 #   define N 120
-#  endif
+#  endif 
 
 #  ifdef MEDIUM_DATASET
 #   define TSTEPS 100
 #   define N 400
-#  endif
+#  endif 
 
 #  ifdef LARGE_DATASET
 #   define TSTEPS 500
 #   define N 2000
-#  endif
+#  endif 
 
 #  ifdef EXTRALARGE_DATASET
 #   define TSTEPS 1000
 #   define N 4000
-#  endif
+#  endif 
 
 
 #endif /* !(TSTEPS N) */
@@ -57,7 +48,7 @@
 #ifdef DATA_TYPE_IS_INT
 #  define DATA_TYPE int
 #  define DATA_PRINTF_MODIFIER "%d "
-#endif
+#endif 
 
 #ifdef DATA_TYPE_IS_FLOAT
 #  define DATA_TYPE float
@@ -78,3 +69,4 @@
 # endif
 
 #endif /* !_SEIDEL_2D_H */
+

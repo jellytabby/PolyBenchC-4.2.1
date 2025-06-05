@@ -1,12 +1,3 @@
-/**
- * This version is stamped on May 10, 2016
- *
- * Contact:
- *   Louis-Noel Pouchet <pouchet.ohio-state.edu>
- *   Tomofumi Yuki <tomofumi.yuki.fr>
- *
- * Web address: http://polybench.sourceforge.net
- */
 #ifndef _FLOYD_WARSHALL_H
 # define _FLOYD_WARSHALL_H
 
@@ -19,23 +10,23 @@
 /* Define sample dataset sizes. */
 #  ifdef MINI_DATASET
 #   define N 60
-#  endif
+#  endif 
 
 #  ifdef SMALL_DATASET
 #   define N 180
-#  endif
+#  endif 
 
 #  ifdef MEDIUM_DATASET
 #   define N 500
-#  endif
+#  endif 
 
 #  ifdef LARGE_DATASET
 #   define N 2800
-#  endif
+#  endif 
 
 #  ifdef EXTRALARGE_DATASET
 #   define N 5600
-#  endif
+#  endif 
 
 
 #endif /* !(N) */
@@ -51,7 +42,7 @@
 #ifdef DATA_TYPE_IS_INT
 #  define DATA_TYPE int
 #  define DATA_PRINTF_MODIFIER "%d "
-#endif
+#endif 
 
 #ifdef DATA_TYPE_IS_FLOAT
 #  define DATA_TYPE float
@@ -72,3 +63,4 @@
 # endif
 
 #endif /* !_FLOYD_WARSHALL_H */
+

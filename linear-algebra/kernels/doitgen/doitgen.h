@@ -1,12 +1,3 @@
-/**
- * This version is stamped on May 10, 2016
- *
- * Contact:
- *   Louis-Noel Pouchet <pouchet.ohio-state.edu>
- *   Tomofumi Yuki <tomofumi.yuki.fr>
- *
- * Web address: http://polybench.sourceforge.net
- */
 #ifndef _DOITGEN_H
 # define _DOITGEN_H
 
@@ -21,31 +12,31 @@
 #   define NQ 8
 #   define NR 10
 #   define NP 12
-#  endif
+#  endif 
 
 #  ifdef SMALL_DATASET
 #   define NQ 20
 #   define NR 25
 #   define NP 30
-#  endif
+#  endif 
 
 #  ifdef MEDIUM_DATASET
 #   define NQ 40
 #   define NR 50
 #   define NP 60
-#  endif
+#  endif 
 
 #  ifdef LARGE_DATASET
 #   define NQ 140
 #   define NR 150
 #   define NP 160
-#  endif
+#  endif 
 
 #  ifdef EXTRALARGE_DATASET
 #   define NQ 220
 #   define NR 250
 #   define NP 270
-#  endif
+#  endif 
 
 
 #endif /* !(NQ NR NP) */
@@ -63,7 +54,7 @@
 #ifdef DATA_TYPE_IS_INT
 #  define DATA_TYPE int
 #  define DATA_PRINTF_MODIFIER "%d "
-#endif
+#endif 
 
 #ifdef DATA_TYPE_IS_FLOAT
 #  define DATA_TYPE float
@@ -84,3 +75,4 @@
 # endif
 
 #endif /* !_DOITGEN_H */
+
