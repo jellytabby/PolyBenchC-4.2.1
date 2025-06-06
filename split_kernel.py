@@ -23,10 +23,8 @@ if not m:
 
 kernel_def = m.group()
 
-# 2) Remove that block from the original text
 driver_text = text[: m.start()] + text[m.end() :]
 
-# 3) Build foo_kernel.c and foo_kernel.h
 kernel_c = f"""
 /* Auto‐extracted kernel for {bench_name} */
 
@@ -36,8 +34,6 @@ kernel_c = f"""
 {kernel_def.removeprefix("static")}
 """
 
-# 4) Build foo_kernel.h (declare the prototype)
-#    We assume the first line of kernel_def is like “static void kernel_foo(int ni, …) {”
 hdr_proto = regex.search(
     r"(void\s+kernel_%s\s*)(?>(?<args>\(([^\(\)]+|(?&args))*\)))"
     % regex.escape(bench_name),
@@ -59,10 +55,20 @@ kernel_h = f"""
 #endif /* {bench_name.upper()}_KERNEL_H */
 """
 
+driver_text = (
+    'extern "C" void __mc_inline_begin(void);\nextern "C" void __mc_inline_end(void);'
+    + driver_text
+)
+
 driver_text = driver_text.replace(
     f'#include "{bench_name}.h"',
     f'#include "{bench_name}.h"\n#include "{bench_name}_module.h"',
 )
+
+driver_text = driver_text.replace(
+    "polybench_start_instruments;", "__mc_inline_begin();"
+)
+driver_text = driver_text.replace("polybench_stop_instruments;", "__mc_inline_end();")
 
 # 5) Write new files
 new_parent_dir = bench_file.parent
