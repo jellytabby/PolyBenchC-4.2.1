@@ -8,7 +8,7 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 bench_file = Path(sys.argv[1])
-bench_name = bench_file.stem  # e.g. "foo"
+bench_name = bench_file.stem.replace("-", "_")  # e.g. "foo"
 text = bench_file.read_text()
 
 combined = regex.compile(
@@ -56,7 +56,7 @@ kernel_h = f"""
 """
 
 driver_text = (
-    'extern "C" void __mc_inline_begin(void);\nextern "C" void __mc_inline_end(void);'
+    "extern void __mc_profiling_begin(void);\nextern void __mc_profiling_end(void);"
     + driver_text
 )
 
@@ -66,15 +66,17 @@ driver_text = driver_text.replace(
 )
 
 driver_text = driver_text.replace(
-    "polybench_start_instruments;", "__mc_inline_begin();"
+    "polybench_start_instruments;", "__mc_profiling_begin();"
 )
-driver_text = driver_text.replace("polybench_stop_instruments;", "__mc_inline_end();")
+driver_text = driver_text.replace(
+    "polybench_stop_instruments;", "__mc_profiling_end();"
+)
 
 # 5) Write new files
 new_parent_dir = bench_file.parent
-kernel_c_path = new_parent_dir / f"{bench_name}_module.cpp"
+kernel_c_path = new_parent_dir / f"{bench_name}_module.c"
 kernel_h_path = new_parent_dir / f"{bench_name}_module.h"
-driver_path = new_parent_dir / f"{bench_name}_main.cpp"
+driver_path = new_parent_dir / f"{bench_name}_main.c"
 
 kernel_c_path.write_text(kernel_c.strip() + "\n")
 kernel_h_path.write_text(kernel_h.strip() + "\n")
