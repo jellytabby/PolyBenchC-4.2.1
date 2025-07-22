@@ -4,7 +4,7 @@ set -euo pipefail
 
 
 display_usage() {
-  echo "Usage: $0 [-s|-c] <bench-list-file>"
+  echo "Usage: $0 [-s|-c|-m] <bench-list-file>"
 }
 
 display_help() {
@@ -12,6 +12,7 @@ display_help() {
     echo ""
     echo "-s    Split benchmarks into <benchmark>_main.c and <benchmark>_module.[c|h] files"
     echo "-c    Clean created files"
+    echo "-m    Monte Carlo Autotuning"
 }
 
 
@@ -24,6 +25,7 @@ while getopts ":hsc" opt; do
             exit 0;;
         s)  split=true;;
         c)  clean=true;;
+        m)  monte_carlo=true;;
         *)  display_usage;
             exit 0 ;;
     esac
@@ -53,6 +55,6 @@ while IFS= read -r bench_path; do
   if $clean; then
     path=$(dirname "$bench_path")
     echo "Cleaning $path..."
-    rm -f "$path"/*_main.c "$path"/*_module.*
+    rm -f "$path"/*_main.c "$path"/*_module.* "$path"/*.bc "$path"/*.o
   fi
 done < "$LIST_FILE"

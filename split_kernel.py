@@ -8,12 +8,13 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 bench_file = Path(sys.argv[1])
-bench_name = bench_file.stem.replace("-", "_")  # e.g. "foo"
+bench_name = bench_file.stem
+sanitized_bench_name = bench_name.replace("-", "_")
 text = bench_file.read_text()
 
 combined = regex.compile(
     r"(static\s+void\s+kernel_%s\s*)(?>(?<args>\(([^\(\)]+|(?&args))*\)))\s*(?>(?<body>{([^{}]+|(?&body))*}))"
-    % regex.escape(bench_name)
+    % regex.escape(sanitized_bench_name)
 )  # let the record state that i built this cursed expression myself, chatgpt could never
 
 m = combined.search(text)
@@ -29,14 +30,21 @@ kernel_c = f"""
 /* Auto‐extracted kernel for {bench_name} */
 
 #include <polybench.h>
+#include <math.h>
 #include "{bench_name}.h"   /* for DATA_TYPE, NI, NJ, NK, etc. */
-
-{kernel_def.removeprefix("static")}
 """
+
+nussinov_defines = f"""
+typedef char base;
+#define match(b1, b2) (((b1)+(b2)) == 3 ? 1 : 0)
+#define max_score(s1, s2) ((s1 >= s2) ? s1 : s2)
+"""
+kernel_c += nussinov_defines if bench_name == "nussinov" else ""
+kernel_c += kernel_def.removeprefix("static")
 
 hdr_proto = regex.search(
     r"(void\s+kernel_%s\s*)(?>(?<args>\(([^\(\)]+|(?&args))*\)))"
-    % regex.escape(bench_name),
+    % regex.escape(sanitized_bench_name),
     kernel_def,
 )
 if not hdr_proto:
@@ -44,19 +52,21 @@ if not hdr_proto:
     sys.exit(1)
 
 kernel_h = f"""
-#ifndef {bench_name.upper()}_KERNEL_H
-#define {bench_name.upper()}_KERNEL_H
+#ifndef {'_'+sanitized_bench_name.upper() if sanitized_bench_name[0].isdigit() else sanitized_bench_name.upper()}_KERNEL_H
+#define {'_'+sanitized_bench_name.upper() if sanitized_bench_name[0].isdigit() else sanitized_bench_name.upper()}_KERNEL_H
 
 #include <polybench.h>
 #include "{bench_name}.h"
-
+{'typedef char base;' if bench_name == 'nussinov' else ''}
 {hdr_proto.group()};  /* prototype */
 
 #endif /* {bench_name.upper()}_KERNEL_H */
 """
 
 driver_text = (
-    "extern void __mc_profiling_begin(void);\nextern void __mc_profiling_end(void);"
+    "extern void __mc_profiling_begin(void);\n"
+    + "extern void __mc_profiling_end(void);\n"
+    + "#define MEDIUM_DATASET\n"
     + driver_text
 )
 
